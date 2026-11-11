@@ -44,20 +44,6 @@ General reopens at t=60.
 - **Benchmark Table 1:** merge time grows slowly for leftist, linearly for the baselines.
 - **Benchmark Table 2:** honest trade-off; for plain insert/extract no structure clearly dominates.
 
-## Likely viva questions
-- *Why is leftist merge O(log n)?* The right path has at most log2(n+1) nodes, and merge
-  only walks right paths.
-- *Why not a plain binary heap?* No efficient merge; it must rebuild in O(n).
-- *Why does the priority rule include arrival and id?* Leftist heaps are not stable, so ties
-  need a deterministic break or the structures would disagree.
-- *Why is leftist not faster at small n?* Per-node malloc and pointer chasing; the gap
-  appears as n grows (see benchmark).
-- *Limitation?* No decrease-key; a patient whose condition worsens would need lazy deletion
-  (insert a new record, skip the stale one). Low-severity patients can starve in overload
-  (see severity-5 waits), which an aging rule could fix.
-- *Is this real-world?* It is a simplified model: real triage uses more factors and real
-  merges are rarer; the point is the mergeable-queue data structure.
-
 ## Possible extensions
 Aging to prevent starvation, lazy-deletion "patient worsens" event, user-defined event script,
 splitting a queue back on reopen (needs a different structure).
