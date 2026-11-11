@@ -1,5 +1,3 @@
-/* leftist.c - leftist heap (Unit III). Same idea as Exp 11, with the Patient
-   record as the element and a cleaner merge. npl(NULL) = -1. */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,20 +6,19 @@
 typedef struct LNode {
     Patient p;
     struct LNode *left, *right;
-    int npl;                       /* null path length */
+    int npl;                       
 } LNode;
 
 typedef struct { LNode *root; int size; } Leftist;
 
 static int npl_of(const LNode *n) { return n ? n->npl : -1; }
 
-/* Recursion only follows right paths, which have O(log n) length. */
 static LNode *lmerge(LNode *a, LNode *b) {
     if (!a) return b;
     if (!b) return a;
     if (higher_priority(&b->p, &a->p)) { LNode *t = a; a = b; b = t; }
     a->right = lmerge(a->right, b);
-    if (npl_of(a->left) < npl_of(a->right)) {      /* keep the heap leftist */
+    if (npl_of(a->left) < npl_of(a->right)) {     
         LNode *t = a->left; a->left = a->right; a->right = t;
     }
     a->npl = npl_of(a->right) + 1;
@@ -30,7 +27,6 @@ static LNode *lmerge(LNode *a, LNode *b) {
 
 static void *l_create(void) { return calloc(1, sizeof(Leftist)); }
 
-/* Left paths can be long, so free by rotation instead of recursion. */
 static void l_clear(Leftist *h) {
     LNode *r = h->root;
     while (r) {
@@ -67,7 +63,6 @@ static int l_peek(void *q, Patient *out) {
 }
 static int l_size(void *q) { return ((Leftist *)q)->size; }
 
-/* THE operation this project is about: O(log n) queue consolidation. */
 static void l_merge_into(void *dst, void *src) {
     Leftist *d = dst, *s = src;
     d->root = lmerge(d->root, s->root);
