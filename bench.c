@@ -1,4 +1,3 @@
-/* bench.c - merge benchmark and correctness self-test. */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +34,7 @@ void run_bench(void) {
         for (int b = 0; b < 3; b++) {
             double t[RUNS];
             for (int r = 0; r < RUNS; r++) {
-                Rng g = { (uint32_t)(n + r) };               /* same data for all back ends */
+                Rng g = { (uint32_t)(n + r) };               
                 Patient *A = make_patients(n, 1, &g), *B = make_patients(n, n + 1, &g);
                 void *qa = ALL[b]->create(), *qb = ALL[b]->create();
                 ALL[b]->bulk_load(qa, A, n);
@@ -90,8 +89,8 @@ int run_selftest(void) {
         const PQOps *o = ALL[b];
         void *qa = o->create(), *qb = o->create(), *qe = o->create();
         for (int i = 0; i < N / 2; i++) { o->insert(qa, &A[i]); o->insert(qb, &B[i]); }
-        o->merge_into(qa, qe);                       /* merging an empty queue is a no-op */
-        o->merge_into(qe, qa);                       /* into an empty queue moves everything */
+        o->merge_into(qa, qe);                       
+        o->merge_into(qe, qa);                       
         o->merge_into(qa, qe);
         o->merge_into(qa, qb);
         seq[b] = malloc((size_t)N * sizeof(int));
