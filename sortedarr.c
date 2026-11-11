@@ -1,6 +1,3 @@
-/* sortedarr.c - array kept sorted by insertion sort (Unit I) as a baseline.
-   Best patient is stored at the END so extraction is O(1).
-   Insert = one insertion-sort step, O(n). Merge = linear two-way merge, O(n). */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +22,7 @@ static void s_insert(void *q, const Patient *p) {
     SA *h = q;
     reserve(h, h->n + 1);
     int pos = h->n;
-    while (pos > 0 && higher_priority(&h->a[pos - 1], p)) {   /* shift better ones right */
+    while (pos > 0 && higher_priority(&h->a[pos - 1], p)) {   
         h->a[pos] = h->a[pos - 1];
         pos--;
     }
@@ -53,7 +50,7 @@ static void s_merge_into(void *dst, void *src) {
     Patient *tmp = malloc((size_t)total * sizeof(Patient));
     if (!tmp) { fprintf(stderr, "Fatal error: out of space\n"); exit(1); }
     int i = 0, j = 0, k = 0;
-    while (i < d->n && j < s->n) {              /* worst first, so best ends up last */
+    while (i < d->n && j < s->n) {             
         if (higher_priority(&d->a[i], &s->a[j])) tmp[k++] = s->a[j++];
         else                                     tmp[k++] = d->a[i++];
     }
