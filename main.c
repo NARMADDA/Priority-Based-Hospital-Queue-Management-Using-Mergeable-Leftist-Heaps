@@ -1,4 +1,3 @@
-/* main.c - menu for the hospital queue simulator. */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,7 +33,7 @@ static int read_int(const char *prompt, int lo, int hi, int dflt) {
 
 int main(int argc, char **argv) {
     Scenario sc = default_scenario();
-    if (argc > 1) {                                  /* non-interactive: ./hospital demo|verbose|bench|test */
+    if (argc > 1) {                                 
         if (!strcmp(argv[1], "demo"))    run_demo(&sc, 0);
         else if (!strcmp(argv[1], "verbose")) run_demo(&sc, 1);
         else if (!strcmp(argv[1], "bench"))   run_bench();
