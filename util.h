@@ -1,5 +1,3 @@
-/* util.h - timer and deterministic random numbers.
-   Keep this as the FIRST include in every .c file. */
 #ifndef UTIL_H
 #define UTIL_H
 #define _POSIX_C_SOURCE 199309L
@@ -22,7 +20,6 @@ static inline double now_ns(void) {
 }
 #endif
 
-/* Small LCG so every machine produces the same patients for the same seed. */
 typedef struct { uint32_t s; } Rng;
 static inline uint32_t rng_next(Rng *r) {
     r->s = r->s * 1664525u + 1013904223u;
