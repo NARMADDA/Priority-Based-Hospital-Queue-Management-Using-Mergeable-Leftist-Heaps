@@ -1,6 +1,3 @@
-/* minmax.c - min-max heap (Unit III) used as an array-based baseline.
-   Even levels are "min" levels (best priority), odd levels are "max" levels
-   (worst priority). Merging = append the other array and rebuild: O(n). */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +6,7 @@
 
 typedef struct { Patient *a; int n, cap; } MM;
 
-#define LT(i, j) higher_priority(&h->a[i], &h->a[j])   /* a[i] before a[j] */
+#define LT(i, j) higher_priority(&h->a[i], &h->a[j])  
 
 static int is_min_level(int i) {
     int lvl = 0;
@@ -19,7 +16,6 @@ static int is_min_level(int i) {
 }
 static void swp(MM *h, int i, int j) { Patient t = h->a[i]; h->a[i] = h->a[j]; h->a[j] = t; }
 
-/* best (want_min) or worst child/grandchild of i */
 static int pick(MM *h, int i, int want_min) {
     int c[6] = { 2*i+1, 2*i+2, 4*i+3, 4*i+4, 4*i+5, 4*i+6 };
     int best = -1;
@@ -35,13 +31,13 @@ static void push_down(MM *h, int i) {
     while (2*i + 1 < h->n) {
         int m = pick(h, i, want_min);
         int better = want_min ? LT(m, i) : LT(i, m);
-        if (m >= 4*i + 3) {                         /* m is a grandchild */
+        if (m >= 4*i + 3) {                        
             if (!better) break;
             swp(h, i, m);
             int p = (m - 1) / 2;
             if (want_min ? LT(p, m) : LT(m, p)) swp(h, m, p);
             i = m;
-        } else {                                    /* m is a child */
+        } else {                                    
             if (better) swp(h, i, m);
             break;
         }
@@ -107,7 +103,7 @@ static void m_merge_into(void *dst, void *src) {
     if (s->n) memcpy(d->a + d->n, s->a, (size_t)s->n * sizeof(Patient));
     d->n += s->n;
     s->n = 0;
-    rebuild(d);                                   /* O(n) */
+    rebuild(d);                                   
 }
 static void m_bulk(void *q, const Patient *a, int n) {
     MM *h = q;
