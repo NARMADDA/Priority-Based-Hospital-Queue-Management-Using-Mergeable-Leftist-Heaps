@@ -1,4 +1,3 @@
-/* sim.c - tick-based hospital simulation. Works with any PQOps back end. */
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,9 +14,9 @@ Scenario default_scenario(void) {
     s.num_patients = 150;
     s.span = 80;
     s.seed = 42;
-    s.events[0] = (Event){ 30, EV_CLOSE,  1, 0 };   /* General closes   -> Emergency */
-    s.events[1] = (Event){ 45, EV_CLOSE,  2, 0 };   /* Pediatrics closes -> Emergency */
-    s.events[2] = (Event){ 60, EV_REOPEN, 1, 0 };   /* General reopens               */
+    s.events[0] = (Event){ 30, EV_CLOSE,  1, 0 };   
+    s.events[1] = (Event){ 45, EV_CLOSE,  2, 0 };   
+    s.events[2] = (Event){ 60, EV_REOPEN, 1, 0 };   
     s.n_events = 3;
     return s;
 }
@@ -53,9 +52,9 @@ static int gen_patients(const Scenario *sc, Patient **pts, int **dept) {
     for (int i = 0; i < n; i++) {
         int r = rng_range(&rng, 100);
         int d = r < 25 ? 0 : (r < 75 ? 1 : 2);
-        int sev = d == 0 ? 1 + rng_range(&rng, 3)        /* Emergency : 1-3 */
-                : d == 1 ? 3 + rng_range(&rng, 3)        /* General   : 3-5 */
-                :          2 + rng_range(&rng, 4);       /* Pediatrics: 2-5 */
+        int sev = d == 0 ? 1 + rng_range(&rng, 3)        
+                : d == 1 ? 3 + rng_range(&rng, 3)        
+                :          2 + rng_range(&rng, 4);      
         memset(&g[i], 0, sizeof g[i]);
         g[i].p.severity = sev;
         g[i].p.arrival  = rng_range(&rng, sc->span);
@@ -126,14 +125,12 @@ int run_sim(const PQOps *ops, const Scenario *sc, SimResult *r, int level) {
                 printf("\n");
             }
         }
-        /* 2. arrivals (redirected if their department is closed) */
         while (next < n && pts[next].arrival <= t) {
             int d = pdept[next];
             while (!open[d]) d = route[d];
             ops->insert(q[d], &pts[next]);
             next++;
         }
-        /* 3. free doctors take the highest-priority patient of their queue */
         for (int j = 0; j < TOTAL_DOCS; j++) {
             int d = doc_dept[j];
             if (!open[d] || busy[j] > t) continue;
@@ -149,7 +146,6 @@ int run_sim(const PQOps *ops, const Scenario *sc, SimResult *r, int level) {
                 printf("[t=%3d] %s Dr.%d starts %s (severity %d, waited %d)\n",
                        t, DEPT_NAME[d], j + 1, p.name, p.severity, wait);
         }
-        /* 4. stop when nothing is left to do */
         int pending = next < n;
         for (int d = 0; d < NDEPT; d++) if (ops->size(q[d]) > 0) pending = 1;
         if (!pending) break;
